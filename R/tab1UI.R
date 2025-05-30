@@ -6,27 +6,27 @@ tab1UI <- function() {
         uiOutput("select_primary"),
         h3("Set luminances [cd/m^2]"),
         br(),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "luminance_primary_1",
           "The number of primaries and their names are determined by the uploaded spectra file.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "luminance_primary_2",
           "The number of primaries and their names are determined by the uploaded spectra file.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "luminance_primary_3",
           "The number of primaries and their names are determined by the uploaded spectra file.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "luminance_primary_4",
           "The number of primaries and their names are determined by the uploaded spectra file.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "luminance_primary_5",
           "The number of primaries and their names are determined by the uploaded spectra file.",
           placement = "right"
@@ -51,7 +51,7 @@ tab1UI <- function() {
         p(h4(textOutput("cie_x"))),
         p(h4(textOutput("cie_y"))),
         br(),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "color_bx",
           "Approximation of the color of the test field in RGB space.",
           placement = "right"

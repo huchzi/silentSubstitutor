@@ -5,27 +5,27 @@ tab2UI <- function() {
       sidebarPanel(
         h3("Set photoreceptor contrasts"),
         p("The number and type of photoreceptors you can control are determined by the number of primaries."),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "lcone",
           "Use negative values for counterphase.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "mcone",
           "Use negative values for counterphase.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "scone",
           "Use negative values for counterphase.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "rod_slider",
           "Use negative values for counterphase.",
           placement = "right"
         ),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "melanopsin_slider",
           "Use negative values for counterphase.",
           placement = "right"
@@ -36,7 +36,7 @@ tab2UI <- function() {
         uiOutput("rod_slider"),
         uiOutput("melanopsin_slider"),
 
-        bsTooltip(
+        shinyBS::bsTooltip(
           "maximize",
           "Press this button to scale all photoreceptor contrasts up (or down) to instrument gamut.",
           placement = "right"
@@ -55,7 +55,7 @@ tab2UI <- function() {
       # Show a plot of the generated distribution
       mainPanel(
         h3("Silent Substitution Conditions"),
-        bsTooltip(
+        shinyBS::bsTooltip(
           "led_contrasts",
           "MaxLuminance: maximal luminance that this LED will reach with the given contrast.",
           placement = "bottom"

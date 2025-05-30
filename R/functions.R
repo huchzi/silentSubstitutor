@@ -148,15 +148,15 @@ shift_cone_fundamentals <- function(fundamentals, receptor, dlambda) {
 
 # macular_pigment calculates the effect of the macular pigment on fundamentals
 macular_pigment <- function(fundamentals, optical_density, mpod_spectrum) {
-  mpod.OD <- multiply(mpod_spectrum, optical_density / max(mpod_spectrum[, 2]))
-  mpod.trans <- linearize(mpod.OD)
+  mpod.OD <- colorSpec::multiply(mpod_spectrum, optical_density / max(mpod_spectrum[, 2]))
+  mpod.trans <- colorSpec::linearize(mpod.OD)
 
   fundamentals * mpod.trans[, 2]
 }
 
 # lens_age calculates the effect of the lens age on fundamentals
 lens_age <- function(fundamentals, age) {
-  lens.trans <- data.frame(linearize(lensAbsorbance(c(30, age), wavelength = 390:780)))
+  lens.trans <- data.frame(colorSpec::linearize(colorSpec::lensAbsorbance(c(30, age), wavelength = 390:780)))
   lens.age <- lens.trans[seq(1, 391, 2), 3] / lens.trans[seq(1, 391, 2), 2]
 
   fundamentals * lens.age

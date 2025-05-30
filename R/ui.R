@@ -1,7 +1,6 @@
 require(shiny)
 require(htmltools)
 require(markdown)
-require(here)
 require(shinyBS)
 
 my_titlePanel <- function(title, windowTitle = title) {
@@ -88,8 +87,7 @@ ui <- function(request) {
 
           )
         )
-      ),
-      # tabPanel("README", htmltools::includeMarkdown(here("markdown", "readme.md")))
+      )
 
 
     )

@@ -1,11 +1,8 @@
-require(here)
 require(shiny)
 require(ggplot2)
 require(colorSpec)
 
-server <- shinyServer(function(input, output, session) {
-
-    load(here("data", "photoreceptor_sensitivities.rda"))
+server <- shiny::shinyServer(function(input, output, session) {
 
     init_spectra <- get_normalized_spectrum_matrix(four_primary_LEDs)
 
@@ -73,7 +70,8 @@ server <- shinyServer(function(input, output, session) {
     output$select_primary <- renderUI(
       choices <-
       selectInput("new_spectra", "Pre-defined spectra",
-                  choices = list.files(here("data", "primary_spectra")))
+                  choices = list.files(system.file("primary_spectra",
+                                                   package = "silentSubstitutor")))
     )
 
     globalVars <- reactiveValues(
@@ -121,6 +119,7 @@ server <- shinyServer(function(input, output, session) {
     led_spectra_long_table <- reactive({
       calculate_power_spectra(get_luminances(), globalVars$led_spectra) |>
         data.frame(wavelength_nm = wavelengths) |>
+        data.table::data.table() |>
         data.table::melt(id = "wavelength_nm", variable.name = "led", value.name = "power")
     })
 
@@ -217,7 +216,7 @@ server <- shinyServer(function(input, output, session) {
 
     test_field_RGB <- reactive({
       rgb_specs <- spectrum_300cd_per_m2() |>
-        product(colorSpec::BT.709.RGB, wavelength = "auto") |>
+        colorSpec::product(colorSpec::BT.709.RGB, wavelength = "auto") |>
         colorSpec::DisplayRGBfromLinearRGB()
 
       rgb(rgb_specs[1], rgb_specs[2], rgb_specs[3])
@@ -225,7 +224,7 @@ server <- shinyServer(function(input, output, session) {
 
     test_field_xyz_coords <- reactive({
       XYZ <- spectrum_300cd_per_m2() |>
-        product(colorSpec::xyz1964.1nm, wavelength = "auto")
+        colorSpec::product(colorSpec::xyz1964.1nm, wavelength = "auto")
 
       list(x = XYZ[1] / sum(XYZ), y = XYZ[2] / sum(XYZ))
     })
@@ -272,7 +271,8 @@ server <- shinyServer(function(input, output, session) {
                  load_spectra_from_path(input$upload_spectra$datapath))
 
     observeEvent(input$new_spectra,
-                 load_spectra_from_path(here("data", "primary_spectra", input$new_spectra)))
+                 load_spectra_from_path(system.file(paste0("primary_spectra/", input$new_spectra),
+                                                    package = "silentSubstitutor")))
 
     output$first_primary <- renderText(globalVars$primary_names[1])
     output$second_primary <- renderText(globalVars$primary_names[2])
@@ -291,7 +291,7 @@ server <- shinyServer(function(input, output, session) {
     output$color_bx <- renderUI({
       div(
         "",
-        style = css(
+        style = htmltools::css(
           isplay = "inline-block",
           width = "100px",
           height = "60px",
@@ -316,17 +316,17 @@ server <- shinyServer(function(input, output, session) {
       req(globalVars$led_spectra)
 
       led_spectra_long_table() |>
-        ggplot(aes(
+        ggplot2::ggplot(ggplot2::aes(
           x = wavelength_nm,
           y = power,
           group = led,
           color = led
         )) +
-        geom_line() +
-        theme_bw() +
-        scale_color_manual(values = unlist(color_palette())) +
-        scale_x_continuous("Wavelength [nm]") +
-        scale_y_continuous("Power [W/m^2]")
+        ggplot2::geom_line() +
+        ggplot2::theme_bw() +
+        ggplot2::scale_color_manual(values = unlist(color_palette())) +
+        ggplot2::scale_x_continuous("Wavelength [nm]") +
+        ggplot2::scale_y_continuous("Power [W/m^2]")
     })
 
     ##### Tab 2 #####
@@ -380,16 +380,16 @@ server <- shinyServer(function(input, output, session) {
 
     ### Plot LED outputs over time
     output$led_luminances <- renderPlot(
-      ggplot(led_luminances_over_time(), aes(x = x, y = lum, fill = LED)) +
-        geom_area() +
-        facet_wrap(~ factor(LED, levels = globalVars$primary_names, ordered = TRUE),
+      ggplot2::ggplot(led_luminances_over_time(), ggplot2::aes(x = x, y = lum, fill = LED)) +
+        ggplot2::geom_area() +
+        ggplot2::facet_wrap(~ factor(LED, levels = globalVars$primary_names, ordered = TRUE),
                    ncol = globalVars$n_primaries) +
-        scale_y_continuous("LED Luminance [cd/m^2]", breaks = seq(0, 200, 20)) +
-        scale_x_continuous("Time", labels = NULL) +
-        scale_fill_manual(values = color_palette()) +
-        theme(text = element_text(size = 20)) +
-        guides(fill = "none") +
-        theme_bw()
+        ggplot2::scale_y_continuous("LED Luminance [cd/m^2]", breaks = seq(0, 200, 20)) +
+        ggplot2::scale_x_continuous("Time", labels = NULL) +
+        ggplot2::scale_fill_manual(values = color_palette()) +
+        ggplot2::theme(text = ggplot2::element_text(size = 20)) +
+        ggplot2::guides(fill = "none") +
+        ggplot2::theme_bw()
     )
 
     observeEvent(input$maximize, {
@@ -418,17 +418,18 @@ server <- shinyServer(function(input, output, session) {
 
       modified_fundamentals() |>
         cbind(Wavelength = wavelengths) |>
+        data.table::data.table() |>
         data.table::melt(id = "Wavelength",
              variable.name = "photoreceptor",
              value.name = "sensitivity") |>
 
-        ggplot(aes(x = Wavelength, y = sensitivity)) +
-        geom_line(aes(color = photoreceptor,
+        ggplot2::ggplot(ggplot2::aes(x = Wavelength, y = sensitivity)) +
+        ggplot2::geom_line(ggplot2::aes(color = photoreceptor,
                       linetype = photoreceptor)) +
-        theme_bw() +
-        scale_x_continuous("Wavelength [nm]") +
-        scale_y_continuous("Relative Sensitivity") +
-        scale_color_manual(
+        ggplot2::theme_bw() +
+        ggplot2::scale_x_continuous("Wavelength [nm]") +
+        ggplot2::scale_y_continuous("Relative Sensitivity") +
+        ggplot2::scale_color_manual(
           "",
           values = c(
             lcone = "red",
@@ -438,7 +439,7 @@ server <- shinyServer(function(input, output, session) {
             melanopsin = "cyan"
           )
         ) +
-        scale_linetype("")
+        ggplot2::scale_linetype("")
     })
 
     ### Plot photoreceptor excitation over time
@@ -472,15 +473,15 @@ server <- shinyServer(function(input, output, session) {
         ordered = TRUE
       )
 
-      ggplot(fTLum, aes(x = x, y = y, fill = LED)) +
-        geom_area(alpha = .6) +
-        facet_wrap( ~ photoreceptor, nrow = 1) +
-        scale_y_continuous("Photoreceptor Excitation", labels = NULL) +
-        scale_x_continuous("Time", labels = NULL) +
-        scale_fill_manual(values = color_palette()) +
-        theme(text = element_text(size = 20)) +
-        guides(fill = "none") +
-        theme_bw()
+      ggplot2::ggplot(fTLum, ggplot2::aes(x = x, y = y, fill = LED)) +
+        ggplot2::geom_area(alpha = .6) +
+        ggplot2::facet_wrap( ~ photoreceptor, nrow = 1) +
+        ggplot2::scale_y_continuous("Photoreceptor Excitation", labels = NULL) +
+        ggplot2::scale_x_continuous("Time", labels = NULL) +
+        ggplot2::scale_fill_manual(values = color_palette()) +
+        ggplot2::theme(text = ggplot2::element_text(size = 20)) +
+        ggplot2::guides(fill = "none") +
+        ggplot2::theme_bw()
 
     })
 
