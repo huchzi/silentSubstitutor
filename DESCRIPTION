@@ -1,0 +1,28 @@
+Package: silentSubstitutor
+Title: Creates Silent Substitution Stimuli for Vision Science
+Version: 0.9.0
+Authors@R: 
+    person("Cord", "Huchzermeyer", , "c.huchzermeyer@posteo.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0408-8981"))
+Description: The app enables the calculation of photoreceptor-directed, periodic stimuli based on dual, triple, or quadruple silent substitution for use in electroretinography.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.0
+Depends: 
+    R (>= 2.10)
+Imports:
+    here,
+    ggplot2,
+    colorSpec,
+    shiny,
+    shinyBS,
+    htmltools,
+    markdown,
+    shinyFeedback,
+    pkgload,
+    data.table
+LazyData: true
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
