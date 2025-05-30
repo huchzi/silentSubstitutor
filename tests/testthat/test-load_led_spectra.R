@@ -1,17 +1,4 @@
-library(here)
-i_am("tests/testthat/test-load_led_spectra.R")
-
-spec_matrix <- load_led_spectra(here("tests", "testthat", "MCVS.csv"), wavelengths)
-
-# print(head(mcvs))
-#
-# test_that("mcvs: returns matrix", {
-#   expect_equal(class(mcvs), c("matrix", "array"))
-# })
-#
-# test_that("mcvs: matrix has correct dimension", {
-#   expect_equal(dim(mcvs), c(length(wavelengths), 5))
-# })
+spec_matrix <- load_led_spectra("MCVS.csv", wavelengths)
 
 test_that("is_matrix", {
   expect_true(is.matrix(spec_matrix))

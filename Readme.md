@@ -5,17 +5,34 @@ The app enables the calculation of photoreceptor-directed, periodic stimuli base
 
 ## Features
 
-- Import of emission spectra from the apparatus
-- Interactive filters and inputs
-- File upload and data handling
-- Modular and extensible code structure
+- Import of emission spectra from the visual stimulator
+- Bookmark custom settings for the stimulator
+- Calculate photoreceptor-directed stimuli based on the silent substitution paradigm
+- Check how changes in the cone fundamentals affect the quality of isolation
 
 ## Getting Started
+
+### Install the app
+
+```r
+install.packages("devtools")
+library(devtools)
+install_github("huchzi/silentSubstitutor")
+```
+
+### Run the app
+
+```r
+library(silentSubstitutor)
+silent_substitutor()
+```
+
+## Contribute
 
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/huchzi/MyShinyApp.git
+git clone https://github.com/huchzi/silentSubstitutor.git
 cd MyShinyApp
 ```
 
@@ -23,39 +40,17 @@ cd MyShinyApp
 
 This project uses [`renv`](https://rstudio.github.io/renv/) to manage package dependencies. In R, run:
 
-  ```r
+```r
 install.packages("renv")
 renv::restore()
 ```
 
 This will install the exact package versions specified in `renv.lock`.
 
-## Running the App
-
-In R, start the application by running:
-
-```r
-shiny::runApp()
-```
-
-If you are using a single `app.R` file, simply:
-
-  ```r
-source("app.R")
-```
-
-## Dependencies
-
-All dependencies are listed in `renv.lock`. However, the main packages used include:
-
-```r
-install.packages(c("shiny", "ggplot2", "dplyr", "readr"))
-```
-
 ## Versioning
 
 This project follows [Semantic Versioning](https://semver.org/).
-Current version: `v1.0.0`
+Current version: `v0.9.0`
 
 See the [CHANGELOG.md](CHANGELOG.md) file for detailed release notes.
 
@@ -79,4 +74,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For questions, suggestions, or issues, please use the GitHub Issues section or email:
 
-  your.email@example.com
+  c.huchzermeyer@posteo.de
