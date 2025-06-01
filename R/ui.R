@@ -15,7 +15,7 @@ my_titlePanel <- function(title, windowTitle = title) {
 }
 
 ui <- function(request) {
-  shinyUI(fluidPage(
+  fluidPage(
     shinyFeedback::useShinyFeedback(),
     # Application title
     my_titlePanel("SilentSubstiTutor"),
@@ -93,5 +93,5 @@ ui <- function(request) {
     )
 
 
-  ))
+  )
 }
