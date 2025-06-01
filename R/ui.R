@@ -18,7 +18,7 @@ ui <- function(request) {
   fluidPage(
     shinyFeedback::useShinyFeedback(),
     # Application title
-    my_titlePanel("SilentSubstiTutor"),
+    my_titlePanel("SilentSubstiTutor (v0.9.0)"),
     tabsetPanel(
       id = "switcher",
       type = "hidden",

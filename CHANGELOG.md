@@ -28,6 +28,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.0] - 2025-05-31
+
+### Added
+- Local deployment as a package is functional
+- Deployment to shinyapps.io with `rsconnect::deployApp()` is functional
+
+### Changed
+- Moved app.R to root directory
+
+### Known Limitations
+- Better documentation of datasets in the app is needed
+- Bookmarking  does not function well, yet
+
+---
+
 ## [Unreleased]
 
 ### Planned
