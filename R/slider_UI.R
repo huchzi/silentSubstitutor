@@ -1,12 +1,9 @@
 require(shiny)
-luminance_slider <- function(n, name) {
+luminance_slider <- function(n, name, ...) {
   sliderInput(
     paste0("luminance_primary_", n),
     name,
-    min = 0.5,
-    max = 100,
-    value = 20,
-    step = .5
+    ...
   )
 }
 

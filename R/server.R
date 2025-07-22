@@ -28,6 +28,10 @@ server <- shiny::shinyServer(function(input, output, session) {
           p('I you want to continue with a set of the integrated emission spectra, press "Dismiss".')
       ))
     }
+    lapply(1:5, function(x) updateSliderInput(session, paste0("luminance_primary_", x),
+                                              min = input[[paste0("lower", x)]],
+                                              max = input[[paste0("upper", x)]],
+                                              step = input[[paste0("step", x)]]))
     updateTabsetPanel(inputId = "switcher", selected = tab_titles[1])
     selected_tab(1)
   })
@@ -354,18 +358,32 @@ server <- shiny::shinyServer(function(input, output, session) {
       }
     })
 
-    output$first_primary <- renderText(globalVars$primary_names[1])
-    output$second_primary <- renderText(globalVars$primary_names[2])
-    output$third_primary <- renderText(globalVars$primary_names[3])
-
-    output$luminance_4th_primary <- renderUI({
+    output$luminance_primary_1 <- renderUI({
       req(globalVars$n_primaries > 3)
-      luminance_slider(4, globalVars$primary_names[4])
+      luminance_slider(1, globalVars$primary_names[1],
+                       value = input$upper1, min = input$lower1, max = input$upper1, step = input$step1)
     })
 
-    output$luminance_5th_primary <- renderUI({
+    output$luminance_primary_2 <- renderUI({
+      luminance_slider(2, globalVars$primary_names[2],
+                       value = input$upper2, min = input$lower2, max = input$upper2, step = input$step2)
+    })
+
+    output$luminance_primary_3 <- renderUI({
+      luminance_slider(3, globalVars$primary_names[3],
+                       value = input$upper3, min = input$lower3, max = input$upper3, step = input$step3)
+    })
+
+    output$luminance_primary_4 <- renderUI({
+      req(globalVars$n_primaries > 3)
+      luminance_slider(4, globalVars$primary_names[4],
+                       value = input$upper4, min = input$lower4, max = input$upper4, step = input$step4)
+    })
+
+    output$luminance_primary_5 <- renderUI({
       req(globalVars$n_primaries > 4)
-      luminance_slider(5, globalVars$primary_names[5])
+      luminance_slider(5, globalVars$primary_names[5],
+                       input$upper5, min = input$lower5, max = input$upper5, step = input$step5)
     })
 
     output$color_bx <- renderUI({

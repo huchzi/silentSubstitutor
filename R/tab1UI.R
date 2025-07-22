@@ -31,11 +31,7 @@ tab1UI <- function() {
           "The number of primaries and their names are determined by the uploaded spectra file.",
           placement = "right"
         ),
-        luminance_slider(1, textOutput("first_primary")),
-        luminance_slider(2, textOutput("second_primary")),
-        luminance_slider(3, textOutput("third_primary")),
-        uiOutput("luminance_4th_primary"),
-        uiOutput("luminance_5th_primary"),
+        lapply(1:5, function(n) uiOutput(paste0("luminance_primary_", n))),
         fluidRow(
           column(width = 6, actionButton("a_matrix", "Show A-Matrix")),
           column(width = 6, actionButton("advanced_settings", "Advanced Settings"))
