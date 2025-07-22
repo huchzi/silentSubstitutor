@@ -4,12 +4,33 @@ require(colorSpec)
 
 server <- shiny::shinyServer(function(input, output, session) {
 
-    onBookmark(function(state) print(str(state$values)))
-
-    onRestored(function(state) {
-      updateTabsetPanel(inputId = "switcher", selected = tab_titles[1])
-      selected_tab(1)
+    onBookmark(function(state) {
+      if (grepl("^CUSTOM:", new_spectra_selection())) {
+        state$values$custom_spectra <- input$upload_spectra$name
+      }
     })
+
+  onRestored(function(state) {
+    if ("custom_spectra" %in% names(state$values)) {
+      showModal(
+        modalDialog(
+          h2(paste("Please upload file:", state$values$custom_spectra)),
+          br(),
+          fileInput(
+            "upload_spectra",
+            NULL,
+            buttonLabel = "Upload spectra",
+            multiple = FALSE
+          ),
+          hr(),
+          h4("Why do you have to do that?"),
+          p("You are starting the app via a bookmarked link that refers to an emission-spectra-file on the local file system. Due to security reasons, the browser cannot directly access the local file system by itself."),
+          p('I you want to continue with a set of the integrated emission spectra, press "Dismiss".')
+      ))
+    }
+    updateTabsetPanel(inputId = "switcher", selected = tab_titles[1])
+    selected_tab(1)
+  })
 
     init_spectra <- get_normalized_spectrum_matrix(four_primary_LEDs)
 
