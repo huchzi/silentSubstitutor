@@ -4,7 +4,23 @@ require(colorSpec)
 
 server <- shiny::shinyServer(function(input, output, session) {
 
+    onBookmark(function(state) print(str(state$values)))
+
+    onRestored(function(state) {
+      updateTabsetPanel(inputId = "switcher", selected = tab_titles[1])
+      selected_tab(1)
+    })
+
     init_spectra <- get_normalized_spectrum_matrix(four_primary_LEDs)
+
+    new_spectra_choices <- reactiveVal(
+      list.files(system.file("primary_spectra",
+                                       package = "silentSubstitutor"))
+    )
+
+    new_spectra_selection <- reactiveVal(head(new_spectra_choices, 1))
+
+    new_custom_spectra <- reactiveVal()
 
     tab_titles <- c("1. Set primaries",
                     "3. Set desired contrasts",
@@ -69,9 +85,10 @@ server <- shiny::shinyServer(function(input, output, session) {
 
     output$select_primary <- renderUI(
       choices <-
-      selectInput("new_spectra", "Pre-defined spectra",
-                  choices = list.files(system.file("primary_spectra",
-                                                   package = "silentSubstitutor")))
+        selectInput("new_spectra",
+                    "Pre-defined spectra",
+                    choices = new_spectra_choices(),
+                    selected = new_spectra_selection())
     )
 
     globalVars <- reactiveValues(
@@ -267,12 +284,26 @@ server <- shiny::shinyServer(function(input, output, session) {
       }
     }
 
-    observeEvent(input$upload_spectra,
-                 load_spectra_from_path(input$upload_spectra$datapath))
+    observeEvent(input$upload_spectra, {
+      load_spectra_from_path(input$upload_spectra$datapath)
+      new_spectra_choices(
+        c(new_spectra_choices()[!grepl("^CUSTOM:", new_spectra_choices())],
+          paste("CUSTOM:", basename(input$upload_spectra$name)))
+      )
+      new_spectra_selection(tail(new_spectra_choices(), 1))
+      # selectInput is automatically updated when going back to the main tab via renderUI
+    })
 
-    observeEvent(input$new_spectra,
-                 load_spectra_from_path(system.file(paste0("primary_spectra/", input$new_spectra),
-                                                    package = "silentSubstitutor")))
+    observeEvent(input$new_spectra, {
+      grepl("^CUSTOM:", input$new_spectra)
+      if (!grepl("^CUSTOM:", input$new_spectra)) {
+        load_spectra_from_path(system.file(paste0(
+          "primary_spectra/", input$new_spectra
+        ), package = "silentSubstitutor"))
+      } else {
+        load_spectra_from_path(input$upload_spectra$datapath)
+      }
+    })
 
     output$first_primary <- renderText(globalVars$primary_names[1])
     output$second_primary <- renderText(globalVars$primary_names[2])
