@@ -33,8 +33,8 @@ ui <- function(request) {
             sliderInput(
               "mac_pigment",
               "Macular pigment optical density",
-              min = -.3,
-              max = .3,
+              min = 0,
+              max = .6,
               step = .05,
               value = 0.3
             ),
