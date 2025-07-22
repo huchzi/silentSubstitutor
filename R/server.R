@@ -112,6 +112,34 @@ server <- shiny::shinyServer(function(input, output, session) {
                     selected = new_spectra_selection())
     )
 
+    output$download_json <- downloadHandler(
+      filename = function()
+        paste0("SilentSubstiTutor-", Sys.Date(), ".json"),
+      content = function(file) {
+        jsonlite::write_json(led_settings(), file)
+      }
+    )
+
+    output$download_excel <- downloadHandler(
+      filename = function()
+        paste0("SilentSubstiTutor-", Sys.Date(), ".xlsx"),
+      content = function(file) {
+        wb <- openxlsx::createWorkbook()
+        openxlsx::addWorksheet(wb, "StimulusConditions")
+        openxlsx::writeData(wb, "StimulusConditions", led_settings())
+        openxlsx::addWorksheet(wb, "Variables")
+        openxlsx::writeData(wb, "Variables",
+                            data.frame(Variable = c("Primary", "PeakWavelength", "Luminance", "Power", "MichelsonContrast", "MaxLumiance"),
+                                       Explanation = c("Name of the primary",
+                                                       "Peak wavelengths of the primary [nm]",
+                                                       "Time-averaged Luminance [cd/m^2]",
+                                                       "Time-averaged Power [W/m^2]",
+                                                       "Michelson contrast [%]",
+                                                       "Peak Luminance [cd/m^2]")))
+        openxlsx::saveWorkbook(wb, file, overwrite = FALSE)
+      }
+    )
+
     globalVars <- reactiveValues(
       led_spectra = init_spectra,
       n_primaries = ncol(init_spectra),
@@ -375,7 +403,7 @@ server <- shiny::shinyServer(function(input, output, session) {
           color = led
         )) +
         ggplot2::geom_line() +
-        ggplot2::theme_bw() +
+        ggplot2::theme_bw(20) +
         ggplot2::scale_color_manual(values = unlist(color_palette())) +
         ggplot2::scale_x_continuous("Wavelength [nm]") +
         ggplot2::scale_y_continuous("Power [W/m^2]")
@@ -441,7 +469,7 @@ server <- shiny::shinyServer(function(input, output, session) {
         ggplot2::scale_fill_manual(values = color_palette()) +
         ggplot2::theme(text = ggplot2::element_text(size = 20)) +
         ggplot2::guides(fill = "none") +
-        ggplot2::theme_bw()
+        ggplot2::theme_bw(20)
     )
 
     observeEvent(input$maximize, {

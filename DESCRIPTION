@@ -19,7 +19,9 @@ Imports:
     htmltools,
     markdown,
     shinyFeedback,
-    data.table
+    data.table,
+    jsonlite,
+    openxlsx
 LazyData: true
 Suggests: 
     pkgload,

@@ -61,6 +61,8 @@ tab2UI <- function() {
           placement = "bottom"
         ),
         tableOutput("led_contrasts"),
+        downloadButton("download_excel", label = "Download Excel"),
+        downloadButton("download_json", label = "Download JSON"),
         # htmltools::includeMarkdown(here("markdown", "contrasts.md")),
         h3("LED outputs"),
         plotOutput("led_luminances")
