@@ -243,6 +243,7 @@ server <- shiny::shinyServer(function(input, output, session) {
           Power = convert_luminance_to_power(get_luminances(), globalVars$led_spectra),
           MichelsonContrast = led_contrasts_percent()
         )
+        l_out$MinLuminance <- l_out$Luminance * (1 - abs(l_out$MichelsonContrast / 100))
         l_out$MaxLuminance <- l_out$Luminance * (1 + abs(l_out$MichelsonContrast / 100))
 
         return(l_out)
@@ -297,6 +298,12 @@ server <- shiny::shinyServer(function(input, output, session) {
         colorSpec::product(colorSpec::xyz1964.1nm, wavelength = "auto")
 
       list(x = XYZ[1] / sum(XYZ), y = XYZ[2] / sum(XYZ))
+    })
+
+    led_limits <- reactive({
+      data.frame(LED = factor(globalVars$primary_names),
+                 minLimits = sapply(1:globalVars$n_primaries, function(n) input[[paste0("lower", n)]]),
+                 maxLimits = sapply(1:globalVars$n_primaries, function(n) input[[paste0("upper", n)]]))
     })
 
     led_luminances_over_time <- reactive({
@@ -361,29 +368,29 @@ server <- shiny::shinyServer(function(input, output, session) {
     output$luminance_primary_1 <- renderUI({
       req(globalVars$n_primaries > 3)
       luminance_slider(1, globalVars$primary_names[1],
-                       value = input$upper1, min = input$lower1, max = input$upper1, step = input$step1)
+                       value = input$upper1 / 2, min = input$lower1, max = input$upper1, step = input$step1)
     })
 
     output$luminance_primary_2 <- renderUI({
       luminance_slider(2, globalVars$primary_names[2],
-                       value = input$upper2, min = input$lower2, max = input$upper2, step = input$step2)
+                       value = input$upper2 / 2, min = input$lower2, max = input$upper2, step = input$step2)
     })
 
     output$luminance_primary_3 <- renderUI({
       luminance_slider(3, globalVars$primary_names[3],
-                       value = input$upper3, min = input$lower3, max = input$upper3, step = input$step3)
+                       value = input$upper3 / 2, min = input$lower3, max = input$upper3, step = input$step3)
     })
 
     output$luminance_primary_4 <- renderUI({
       req(globalVars$n_primaries > 3)
       luminance_slider(4, globalVars$primary_names[4],
-                       value = input$upper4, min = input$lower4, max = input$upper4, step = input$step4)
+                       value = input$upper4 / 2, min = input$lower4, max = input$upper4, step = input$step4)
     })
 
     output$luminance_primary_5 <- renderUI({
       req(globalVars$n_primaries > 4)
       luminance_slider(5, globalVars$primary_names[5],
-                       input$upper5, min = input$lower5, max = input$upper5, step = input$step5)
+                       input$upper5 / 2, min = input$lower5, max = input$upper5, step = input$step5)
     })
 
     output$color_bx <- renderUI({
@@ -460,6 +467,13 @@ server <- shiny::shinyServer(function(input, output, session) {
         } else {
           tab_out$MaxLuminance[i] <- round(as.numeric(tab_out$MaxLuminance[i]), 3)
         }
+        if ((as.numeric(tab_out$MinLuminance[i]) - input[[paste0("lower", i)]]) < -.5) {
+          tab_out$MinLuminance[i] <- paste0("<div style='color: white; background-color: red;'>",
+                                            round(as.numeric(tab_out$MinLuminance[i]), 3),
+                                            "</div>")
+        } else {
+          tab_out$MinLuminance[i] <- round(as.numeric(tab_out$MinLuminance[i]), 3)
+        }
         if (abs(as.numeric(tab_out$MichelsonContrast[i])) > 100.0001) {
           tab_out$MichelsonContrast[i] <- paste0("<div style='color: white; background-color: red;'>",
                                             round(as.numeric(tab_out$MichelsonContrast[i]), 3),
@@ -471,24 +485,27 @@ server <- shiny::shinyServer(function(input, output, session) {
       tab_out
     },
     striped = TRUE,
-    align = "lrrrrr",
+    align = "lrrrrrr",
     caption = "Primary settings for achieving silent substitution", digits = 3,
     sanitize.text.function = function(x) x
     )
 
     ### Plot LED outputs over time
-    output$led_luminances <- renderPlot(
+    output$led_luminances <- renderPlot({
+
       ggplot2::ggplot(led_luminances_over_time(), ggplot2::aes(x = x, y = lum, fill = LED)) +
         ggplot2::geom_area() +
+        ggplot2::geom_hline(data = led_limits(), ggplot2::aes(yintercept = minLimits), size = 1.5) +
+        ggplot2::geom_hline(data = led_limits(), ggplot2::aes(yintercept = maxLimits), size = 1.5) +
         ggplot2::facet_wrap(~ factor(LED, levels = globalVars$primary_names, ordered = TRUE),
                    ncol = globalVars$n_primaries) +
-        ggplot2::scale_y_continuous("LED Luminance [cd/m^2]", breaks = seq(0, 200, 20)) +
+        ggplot2::scale_y_continuous("LED Luminance [cd/m^2]") +
         ggplot2::scale_x_continuous("Time", labels = NULL) +
         ggplot2::scale_fill_manual(values = color_palette()) +
         ggplot2::theme(text = ggplot2::element_text(size = 20)) +
         ggplot2::guides(fill = "none") +
         ggplot2::theme_bw(20)
-    )
+    })
 
     observeEvent(input$maximize, {
       lapply(c("lcone", "mcone", "scone", "rod", "melanpsin"), function(x)
