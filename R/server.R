@@ -153,7 +153,7 @@ server <- shiny::shinyServer(function(input, output, session) {
         shift_cone_fundamentals("lcone", input$l_cone_shift) |>
         shift_cone_fundamentals("mcone", input$m_cone_shift) |>
         lens_age(input$lens_age) |>
-        macular_pigment(input$mac_pigment, silentSubstitutor::mpod_spectrum)
+        macular_pigment(input$mac_pigment - 0.3, silentSubstitutor::mpod_spectrum)
     })
 
     get_luminances <- reactive({

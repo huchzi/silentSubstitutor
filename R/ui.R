@@ -18,7 +18,7 @@ ui <- function(request) {
   fluidPage(
     shinyFeedback::useShinyFeedback(),
     # Application title
-    my_titlePanel("SilentSubstiTutor (v0.9.0)"),
+    my_titlePanel("SilentSubstiTutor (v1.0.0)"),
     tabsetPanel(
       id = "switcher",
       type = "hidden",
@@ -36,7 +36,7 @@ ui <- function(request) {
               min = -.3,
               max = .3,
               step = .05,
-              value = 0
+              value = 0.3
             ),
             sliderInput(
               "lens_age",
