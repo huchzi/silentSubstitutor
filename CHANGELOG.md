@@ -43,6 +43,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.0] - 2025-07-26
+
+### Added
+- Bookmarking is functional
+- Option for downloading stimulus conditions as JSON or .xlsx
+- LED luminance limits are shown in the plots
+- Lower limit problems shown in the table
+
+### Changed
+- Custom emission spectra that are uploaded are shown in the dropdown menu
+
+### Known Limitations
+- Better documentation of datasets in the app is still needed
+
+---
+
 ## [Unreleased]
 
 ### Planned
