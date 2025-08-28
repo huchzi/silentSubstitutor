@@ -5,20 +5,30 @@ require(shinyBS)
 
 my_titlePanel <- function(title, windowTitle = title) {
   css <- paste("background-color: #4CAF50",
-               "color : white",
-               "padding-left: 15px",
+               "color: white",
+               "padding: 10px 15px",
                "margin-left: -15px",
                "margin-right: -15px",
                "border-radius: 5px",
+               "display: flex",
+               "justify-content: space-between",
+               "align-items: center",
                sep = ";")
-  tagList(tags$head(tags$title(windowTitle)), h2(title, style = css))
+
+  tagList(
+    tags$head(tags$title(windowTitle)),
+    div(style = css,
+        h2(title, style = "margin: 0;"),
+        actionButton("info", "Info")
+    )
+  )
 }
 
 ui <- function(request) {
   fluidPage(
     shinyFeedback::useShinyFeedback(),
     # Application title
-    my_titlePanel("SilentSubstiTutor (v1.0.0)"),
+    my_titlePanel("SilentSubstiTutor"),
     tabsetPanel(
       id = "switcher",
       type = "hidden",
