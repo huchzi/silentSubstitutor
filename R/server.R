@@ -58,17 +58,18 @@ server <- shiny::shinyServer(function(input, output, session) {
   )
 
   selected_tab <- reactiveVal(1)
+
   observeEvent(input$info, {
     showModal(
       modalDialog(
-        p("Author: Cord Huchzermeyer"),
+        p("Author:", a("Cord Huchzermeyer", href = "mailto:cord.huchzermeyer@uk-erlangen.de")),
         h3("Purpose"),
         p("SilentSubstiTutor is a tool for creating photoreceptor-directed stimuli for isolated stimulation of single photoreceptor types or a combination thereof."),
         h3("Disclaimer"),
         p("Although the calculations implemented in this application have been carefully validated, ISCEV takes no reliability for erroneous calculations and it is recommended that results are checked against manual calculation, particularly in situations where the accuracy of results is of critical importance."),
         p("Furthermore, the interpretation of the results depends on several assumptions that are rarely fulfilled completely in practice and may not be valid in certain circumstances. Consequently, clinical and scientific interpretation of the results requires a critical appraisal of these assumptions."),
         p("As with other ISCEV standards and guidelines, this application does not encompass clinical safety standards or standards for clinical care and management. For clinical use, instruments approved for medical application must be employed, and local regulations regarding clinical safety, patient care, and data protection must be strictly observed."),
-        title = "About SilentSubstiTutor v1.0.1"
+        title = "About SilentSubstiTutor v1.1.0"
       )
     )
   })
@@ -153,24 +154,9 @@ server <- shiny::shinyServer(function(input, output, session) {
       paste0("SilentSubstiTutor-", Sys.Date(), ".xlsx")
     },
     content = function(file) {
-      wb <- openxlsx::createWorkbook()
-      openxlsx::addWorksheet(wb, "StimulusConditions")
+      template_file <- system.file("template.xlsx", package = "silentSubstitutor")
+      wb <- openxlsx::loadWorkbook(template_file)
       openxlsx::writeData(wb, "StimulusConditions", led_settings())
-      openxlsx::addWorksheet(wb, "Variables")
-      openxlsx::writeData(
-        wb, "Variables",
-        data.frame(
-          Variable = c("Primary", "PeakWavelength", "Luminance", "Power", "MichelsonContrast", "MaxLumiance"),
-          Explanation = c(
-            "Name of the primary",
-            "Peak wavelengths of the primary [nm]",
-            "Time-averaged Luminance [cd/m^2]",
-            "Time-averaged Power [W/m^2]",
-            "Michelson contrast [%]",
-            "Peak Luminance [cd/m^2]"
-          )
-        )
-      )
       openxlsx::saveWorkbook(wb, file, overwrite = FALSE)
     }
   )

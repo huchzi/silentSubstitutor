@@ -59,7 +59,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2025-09-01
+
+### Added
+- Info button in the title, including contact information and a disclaimer
+- Downloadable Excel file includes Worksheet for direct export to Diagnosys devices
+
+---
+
 ## [Unreleased]
 
 ### Planned
-- Export functionality for computed stimuli (CSV, JSON)
+- Export functionality for RolandConsult RETIport

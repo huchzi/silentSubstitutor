@@ -13,6 +13,8 @@ A data frame with 196 rows and 3 columns:
 }
 }
 \source{
+CIE (1926). Commission Internationale de l'Eclairage Proceedings, 1924. Cambridge: Cambridge University Press.
+
 www.cvrl.org
 }
 \usage{
