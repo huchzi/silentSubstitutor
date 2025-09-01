@@ -78,7 +78,6 @@ This will install the exact package versions specified in `renv.lock`.
 ## Versioning
 
 This project follows [Semantic Versioning](https://semver.org/).
-Current version: `v0.9.0`
 
 See the [CHANGELOG.md](CHANGELOG.md) file for detailed release notes.
 
